@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Wallet {
+  id                String    @id @default(uuid())
+  name              String
+  chain             Chain
+  encryptedMnemonic String
+  addressIndex      Int       @default(0)
+  addresses         Address[]
+  createdAt         DateTime  @default(now())
+}
+
+model Address {
+  id             String   @id @default(uuid())
+  walletId       String
+  wallet         Wallet   @relation(fields: [walletId], references: [id])
+  address        String   @unique
+  derivationPath String
+  index          Int
+  createdAt      DateTime @default(now())
+}
+
+enum Chain {
+  ETHEREUM
+  BITCOIN
+}
