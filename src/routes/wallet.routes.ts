@@ -1,6 +1,8 @@
 import { FastifyPluginAsync } from 'fastify';
 import { WalletService } from '../services/wallet.service.js';
 import { CreateWalletSchema, DeriveAddressSchema } from '../schemas/wallet.schema.js';
+import { EthService } from '../services/eth.service.js';
+import { BtcService } from '../services/btc.service.js';
 
 const walletRoutes: FastifyPluginAsync = async (server) => {
   // POST /wallets — create a new wallet
@@ -38,6 +40,34 @@ const walletRoutes: FastifyPluginAsync = async (server) => {
     const service = new WalletService(server.prisma);
     await service.deleteWallet(request.params.id);
     return reply.code(204).send();
+  });
+
+  // GET /wallets/:id/balance — get balance for all addresses in a wallet
+  server.get<{ Params: { id: string } }>('/:id/balance', async (request, reply) => {
+    const walletService = new WalletService(server.prisma);
+    const wallet = await walletService.getWallet(request.params.id);
+
+    if (wallet.chain === 'ETHEREUM') {
+      const ethService = new EthService();
+      const balances = await Promise.all(
+        wallet.addresses.map(async (addr) => {
+          const balance = await ethService.getBalance(addr.address);
+          return { address: addr.address, derivationPath: addr.derivationPath, ...balance };
+        })
+      );
+      return reply.send({ walletId: wallet.id, chain: wallet.chain, balances });
+    }
+
+    if (wallet.chain === 'BITCOIN') {
+      const btcService = new BtcService();
+      const balances = await Promise.all(
+        wallet.addresses.map(async (addr) => {
+          const balance = await btcService.getBalance(addr.address);
+          return { address: addr.address, derivationPath: addr.derivationPath, ...balance };
+        })
+      );
+      return reply.send({ walletId: wallet.id, chain: wallet.chain, balances });
+    }
   });
 };
 
