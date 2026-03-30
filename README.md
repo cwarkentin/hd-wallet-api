@@ -2,7 +2,9 @@
 
 A production-grade REST API for generating and managing hierarchical deterministic (HD) wallets for Ethereum and Bitcoin, built with Node.js and TypeScript.
 
-Live testnet transaction: [`0x502f9f7e61d0600e6ae70dbc9899df91358be9b589485a2cb2daa9c3c32b2ec7`](https://sepolia.etherscan.io/tx/0x502f9f7e61d0600e6ae70dbc9899df91358be9b589485a2cb2daa9c3c32b2ec7)
+Live testnet transactions:
+- **ETH Sepolia:** [`0x502f9f7e...`](https://sepolia.etherscan.io/tx/0x502f9f7e61d0600e6ae70dbc9899df91358be9b589485a2cb2daa9c3c32b2ec7)
+- **BTC Testnet:** [`ee40ef7b...`](https://blockstream.info/testnet/tx/ee40ef7b0cd1945c24f2fb78f00edc7e9f5ddd880eaeb9d9dab1bfb0a804d630)
 
 ---
 
